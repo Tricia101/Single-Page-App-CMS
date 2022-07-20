@@ -1,0 +1,115 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Yunshan Lyu</title>
+
+<link id="styleLink" rel="stylesheet" type="text/css" href="light.css">
+<Script>
+  // 3 global variables:
+  var json;
+  var showAbstract = true;
+  var showKey = 0;
+
+  function loadDoc() {
+    fetch('content.json')
+      .then(process)
+      .then(r => json = r)
+      .then(run);
+  }
+
+  function process(r) {
+    if (r.ok) {
+      return r.json();
+    } else {
+      message(`Error ${r.status}! ${r.statusText}`, 0);
+    }
+  }
+
+  function run() {
+    json.forEach(function(item, key) {
+      document.getElementById('mainnav').innerHTML += `<button class = "pagebutton" onclick="clicked(${key})">${item.title}</button>`;
+    });
+    clicked(showKey);
+  }
+
+  function clicked(selected) {
+    showKey = selected;
+
+    if (showAbstract) {
+      document.getElementById('introduction').innerHTML = json[selected].abstract;
+
+    } else {
+      document.getElementById('introduction').innerHTML = json[selected].long;
+
+    }
+    message(`Loaded ${json[selected].title} section.`, 1);
+  }
+
+  function changeContant(){
+    showAbstract = !showAbstract;
+    clicked(showKey);
+    if(showAbstract){
+      message(`Abstract is shown.`, );
+    }else{
+      message(`Detail is shown.`, );
+    }
+  }
+
+  function themeOption(style) {
+  document.getElementById('styleLink').href = style;
+  message('Style Changed: ' + style, 1)
+  }
+
+  function message(txt, level)
+  {
+         document.getElementById('msg').innerHTML = txt;
+         switch (level) {
+             case 0: // Error
+                 document.getElementById('msg').style.color = '#FF0000';
+                 break;
+             case 1: // Loaded
+                 document.getElementById('msg').style.color = '#56B4F5';
+                 break;
+             default: // others
+                 document.getElementById('msg').style.color = '#5FD5A2';
+                 break;
+         }
+  }
+
+
+</script>
+</head>
+
+<body  onload="loadDoc()">
+
+<div class="nav">
+    <div id="mainnav">
+      <!-- Main navigation bar should appear here. -->
+      <button onclick="changeContant()" id="changeButton" class="changebutton">Change Content</button>
+    </div>
+
+
+
+    <div id="themenav">
+      <ul>
+      <li class="theme_li"> <button onclick="themeOption('light.css')" class="themebutton">Light</button></li>
+      <li class="theme_li"> <button onclick="themeOption('dark.css')" class="themebutton">Dark</button></li>
+      <li class="theme_li"><button onclick="themeOption('large_fonts.css')" class="themebutton">Large Fonts</button></li>
+      <li class="theme_li"><button onclick="themeOption('sea.css')" class="themebutton">Sea</button></li>
+      <li class="theme_li"><button onclick="themeOption('forest.css')" class="themebutton">Forest</button></li>
+      </ul>
+   </div>
+</div>
+
+<div id="introduction">
+ <!-- Content should appear here. -->
+</div>
+
+<div id="msg">
+<!-- Message should appear here. -->
+</div>
+
+
+</body>
+</html>
